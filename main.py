@@ -5,7 +5,7 @@ import threading
 import schedule
 import json
 
-DB_ADDRESS = '/etc/x-ui/x-ui.db'
+DB_ADDRESS = 'x-ui.db'
 USER_LAST_ID = 0
 LIMIT_ACCOUNT_TRAFFIC = 5 * 1024 * 1024 * 1024 # GB
 
@@ -13,7 +13,7 @@ LIMIT_ACCOUNT_TRAFFIC = 5 * 1024 * 1024 * 1024 # GB
 def bytes_to_GB(bytes):
     return bytes / 1024 / 1024 / 1024
 
-def getUsers():
+def getUsers() -> list[dict]:
     global USER_LAST_ID
     conn = sqlite3.connect(DB_ADDRESS)
     cursor = conn.execute(f"select id,remark,port,settings,protocol from inbounds where id > {USER_LAST_ID}")
@@ -45,6 +45,8 @@ def checkNewUsers():
 def init():
     users_list = getUsers()
     for user in users_list:
+        if not len(user['users']['clients']) > 0:
+            continue
         max_conn = user['users']['clients'][0]['email']
         if max_conn == 'unlimited':
             continue
