@@ -45,7 +45,7 @@ def checkNewUsers():
 def init():
     users_list = getUsers()
     for user in users_list:
-        max_conn = user['users'][0]['email']
+        max_conn = user['users']['clients'][0]['email']
         if max_conn == 'unlimited':
             continue
         try:
